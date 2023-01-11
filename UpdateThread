@@ -1,0 +1,30 @@
+var updateDelay = 30*1000;
+var commentThread = "kaencrypted_17d71f6c92b07f2cd4a3b2af9a08cd17_52e0e7545ade220cad193c99373a0667bd82eed8ab5384c248714baeb9b84adf42e5ed85e4752caa97c4b3cfaef3a2063ea0018c84a15699e51bca522b7b9f2b8079fb7e180b6584b8057e5197de1da7544ab39b5c8640197879788af33f186811ab4207c5fa5b1b798bd5131f989edac7fd765904a54b52c721611e856e3d25"; 
+var fkey = ('; '+document.cookie).split(`; fkey=`).pop().split(';')[0];
+async function getComments() {
+    return await (await fetch("https://www.khanacademy.org/api/internal/graphql/getFeedbackReplies", {
+      "headers": {
+        "x-ka-fkey": fkey
+      },
+      "body": `{\"operationName\":\"getFeedbackReplies\",\"variables\":{\"postKey\":\"${commentThread}\"},\"query\":\"query getFeedbackReplies($postKey: String!) {\\n  feedbackReplies(feedbackKey: $postKey) {\\n    expandKey\\n    appearsAsDeleted\\n    author {\\n      id\\n      kaid\\n      nickname\\n      avatar {\\n        name\\n        imageSrc\\n        __typename\\n      }\\n      __typename\\n    }\\n    content\\n    date\\n    definitelyNotSpam\\n    deleted\\n    downVoted\\n    expandKey\\n    feedbackType\\n    flaggedBy\\n    flaggedByUser\\n    flags\\n    focusUrl\\n    fromVideoAuthor\\n    key\\n    lowQualityScore\\n    notifyOnAnswer\\n    permalink\\n    qualityKind\\n    replyCount\\n    replyExpandKeys\\n    showLowQualityNotice\\n    sumVotesIncremented\\n    upVoted\\n    __typename\\n  }\\n}\\n\"}`,
+      "method": "POST",
+      "mode": "cors",
+      "credentials": "include"
+    })).json();
+}
+var thread = document.getElementById(commentThread+"-replies-container").children[0];
+async function updateComments() {
+    console.log("Checking...")
+    var comments = (await getComments()).data.feedbackReplies;
+    var lastNumOfComments = thread.children.length;
+    for (var i = lastNumOfComments; i < comments.length; i++) {
+        var comment = comments[i];
+        var layout = thread.children[1].cloneNode(true);
+        layout.getElementsByClassName("_9phhti")[0].src="https://cdn.kastatic.org"+comment.author.avatar.imageSrc;
+        layout.getElementsByClassName("_1juyo7q2")[0].innerHTML=comment.author.nickname;
+        layout.getElementsByClassName("_o8fy2ud")[0].innerHTML=comment.content;
+        thread.appendChild(layout);
+    }
+    console.log("Done");
+}
+setInterval(updateComments, updateDelay);
