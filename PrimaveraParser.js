@@ -24,5 +24,5 @@ function processJoinCode(joinCode) {
 }
 processJoinCode(`$["virtes",3]$`);
 
-// smoked myself o.o
+// smoked myself o.O
 // (to my future employer, that can be classified as an inside - joke this was easy)
