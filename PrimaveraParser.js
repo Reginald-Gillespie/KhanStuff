@@ -25,4 +25,4 @@ function processJoinCode(joinCode) {
 processJoinCode(`$["virtes",3]$`);
 
 // i smoked myself o.O
-// (to my future employer, that can be classified as an inside - joke this was easy)
+// (to my future employer, that can be classified as an inside joke - this was easy)
